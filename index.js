@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
+const membersFunctions = require('./functions/members.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -18,6 +19,9 @@ for (const file of commandFiles) {
 client.once('ready', () => {
 	console.log('Ready!');
 });
+
+// Team Members Check
+setInterval(membersFunctions.checkTheMembers, 20000);
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isChatInputCommand()) return;

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, codeBlock } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, codeBlock } = require('discord.js');
 const { Sequelize } = require('sequelize');
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
             host: 'localhost',
             dialect: 'sqlite',
             logging: false,
-            storage: '/home/trebla/ZDEV/discord/clashdash-v.0.03/database.sqlite',
+            storage: '/home/trebla/ZDEV/discord/clashdash/database.sqlite',
             freezeTableName: true,
         });
 
@@ -40,16 +40,26 @@ module.exports = {
                         player_team_tag: team_tag,
                     },
                 });
-
+                console.log(query);
                 let members = '';
 
                 for await (const data of query) {
                     console.log(data);
-                    members += data.player_id + '\t' + data.player_name + '\n';
+                    members += data.player_id;
+                    if (data.player_id.length == 9) {
+                        members += ' ';
+                    }
+                    members += '\t' + data.player_name + '\n';
                 }
 
+                // Message sous forme d'embed
+                const memberListEmbed = new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle('Member List')
+                    .setDescription(codeBlock(members));
+
                 // Affichage des membres
-                await interaction.reply(codeBlock(members));
+                await interaction.reply({ embeds: [memberListEmbed] });
 
             } catch (error) {
                 console.error('Unable to find members', error);

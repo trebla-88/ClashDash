@@ -26,7 +26,7 @@ module.exports = {
             host: 'localhost',
             dialect: 'sqlite',
             logging: false,
-            storage: '/home/trebla/ZDEV/discord/clashdash-v.0.03/database.sqlite',
+            storage: '/home/trebla/ZDEV/discord/clashdash/database.sqlite',
             freezeTableName: true,
         });
 
