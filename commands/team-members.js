@@ -40,11 +40,13 @@ module.exports = {
                         player_team_tag: team_tag,
                     },
                 });
-                console.log(query);
+                // Debugging purposes
+                // console.log(query);
                 let members = '';
 
                 for await (const data of query) {
-                    console.log(data);
+                    // Debugging purposes
+                    // console.log(data);
                     members += data.player_id;
                     if (data.player_id.length == 9) {
                         members += ' ';
@@ -59,6 +61,7 @@ module.exports = {
                     .setDescription(codeBlock(members));
 
                 // Affichage des membres
+                console.log('Command /team-members success.');
                 await interaction.reply({ embeds: [memberListEmbed] });
 
             } catch (error) {

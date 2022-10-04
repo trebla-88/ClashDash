@@ -2,7 +2,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
-const membersFunctions = require('./functions/members.js');
+const addMembersFunctions = require('./functions/addMembers.js');
+const deleteMembersFunctions = require('./functions/deleteMembers.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -20,8 +21,11 @@ client.once('ready', () => {
 	console.log('Ready!');
 });
 
-// Team Members Check
-setInterval(membersFunctions.checkTheMembers, 20000);
+// Add new Team Members
+setInterval(addMembersFunctions.addTheMembers, 60 * 1000);
+
+// Delete old Team Members
+setInterval(deleteMembersFunctions.deleteTheMembers, 60 * 60 * 1000);
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isChatInputCommand()) return;

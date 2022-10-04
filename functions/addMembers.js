@@ -8,7 +8,7 @@ const myConfig = {
     },
 };
 
-async function checkTheMembers() {
+async function addTheMembers() {
     // Team Tag Definition
     const team_tag = '2PVYQOOR';
 
@@ -75,11 +75,6 @@ async function checkTheMembers() {
         });
 }
 
-function helloWorld() {
-    console.log('Hello world!');
-}
-
 module.exports = {
-    checkTheMembers,
-    helloWorld,
+    addTheMembers,
 };
