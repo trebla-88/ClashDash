@@ -6,15 +6,13 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		player_name: {
 			type: DataTypes.STRING,
-            unique: false,
 		},
         player_discord: {
 			type: DataTypes.STRING,
             unique: true,
 		},
-        player_team_tag: {
+        clan_id: {
 			type: DataTypes.STRING,
-            unique: false,
 		},
 	}, {
 		timestamps: false,

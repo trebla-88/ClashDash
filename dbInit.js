@@ -8,8 +8,17 @@ const sequelize = new Sequelize('database', 'username', 'password', {
     freezeTableName: true,
 });
 
-const Teams = require('./models/Teams.js')(sequelize, Sequelize.DataTypes);
+const Capital = require('./models/Capital.js')(sequelize, Sequelize.DataTypes);
+const CapitalParticipants = require('./models/CapitalParticipants.js')(sequelize, Sequelize.DataTypes);
+const ClanGames = require('./models/ClanGames.js')(sequelize, Sequelize.DataTypes);
+const ClanGamesParticipants = require('./models/ClanGamesParticipants.js')(sequelize, Sequelize.DataTypes);
+const Clans = require('./models/Clans.js')(sequelize, Sequelize.DataTypes);
+const ClanWarLeagues = require('./models/ClanWarLeagues.js')(sequelize, Sequelize.DataTypes);
+const ClanWarLeaguesRounds = require('./models/ClanWarLeaguesRounds.js')(sequelize, Sequelize.DataTypes);
 const Members = require('./models/Members.js')(sequelize, Sequelize.DataTypes);
+const Stats = require('./models/Stats.js')(sequelize, Sequelize.DataTypes);
+const WarParticipants = require('./models/WarParticipants.js')(sequelize, Sequelize.DataTypes);
+const Wars = require('./models/Wars.js')(sequelize, Sequelize.DataTypes);
 
 (async () => {
     try {
@@ -18,8 +27,19 @@ const Members = require('./models/Members.js')(sequelize, Sequelize.DataTypes);
     } catch (error) {
         console.error('Unable to connect to the database:', error);
     }
-    await Teams.sync({ force: true });
-    await Members.sync({ force: true });
-    console.log('Database Initialization Successful');
+
+    await Capital.sync();
+    await CapitalParticipants.sync();
+    await ClanGames.sync();
+    await ClanGamesParticipants.sync();
+    await Clans.sync();
+    await ClanWarLeagues.sync();
+    await ClanWarLeaguesRounds.sync();
+    await Members.sync();
+    await Stats.sync();
+    await WarParticipants.sync();
+    await Wars.sync();
+
+    console.log('Database Initialization Successful.');
     sequelize.close();
 })();
