@@ -45,7 +45,7 @@ async function deleteTheMembers() {
                 try {
                     const dbMembers = await Members.findAll({
                         where: {
-                            player_team_tag: team_tag,
+                            clan_id: team_tag,
                         },
                     });
                     let noDelete = true;

@@ -4,6 +4,7 @@ const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 const addMembersFunctions = require('./functions/addMembers.js');
 const deleteMembersFunctions = require('./functions/deleteMembers.js');
+const statsFunctions = require('./functions/stats.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -25,7 +26,10 @@ client.once('ready', () => {
 setInterval(addMembersFunctions.addTheMembers, 60 * 1000);
 
 // Delete old Team Members
-setInterval(deleteMembersFunctions.deleteTheMembers, 60 * 60 * 1000);
+setInterval(deleteMembersFunctions.deleteTheMembers, 90 * 1000);
+
+// Update Stats
+setInterval(statsFunctions.updateStats, 60 * 1000);
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isChatInputCommand()) return;

@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
 		trophies_count: {
             type: DataTypes.INTEGER,
         },
+        versus_trophies_count: {
+            type: DataTypes.INTEGER,
+        },
 		star_count: {
             type: DataTypes.INTEGER,
         },

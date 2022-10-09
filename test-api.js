@@ -14,7 +14,7 @@ axios
   // Get Team Members
   // .get('https://api.clashofclans.com/v1/clans/%232PVYQOOR/members', myConfig)
   // Get WarLeague Group
-  .get('https://api.clashofclans.com/v1/clans/%232PVYQOOR/currentwar/leaguegroup', myConfig)
+  // .get('https://api.clashofclans.com/v1/clans/%232PVYQOOR/currentwar/leaguegroup', myConfig)
   // Get WarLeague War
   // .get('https://api.clashofclans.com/v1/clanwarleagues/wars/%232VVV0L9G9', myConfig)
   // Get Team WarLog
@@ -25,7 +25,7 @@ axios
   // .get('https://api.clashofclans.com/v1/clans/%232PVYQOOR/currentwar', myConfig)
   // PLAYER
   // Get Player Info
-  // .get('https://api.clashofclans.com/v1/players/%232PRJVLY29', myConfig)
+  .get('https://api.clashofclans.com/v1/players/%232PRJVLY29', myConfig)
   .then(res => {
     console.log(`statusCode: ${res.status}`);
     console.log(res.data);

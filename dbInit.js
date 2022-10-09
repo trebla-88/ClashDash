@@ -28,6 +28,13 @@ const Wars = require('./models/Wars.js')(sequelize, Sequelize.DataTypes);
         console.error('Unable to connect to the database:', error);
     }
 
+    // FK
+    /*
+    Members.hasMany(Stats);
+    Stats.belongsTo(Members);
+    */
+
+    // Sync
     await Capital.sync();
     await CapitalParticipants.sync();
     await ClanGames.sync();
@@ -36,7 +43,9 @@ const Wars = require('./models/Wars.js')(sequelize, Sequelize.DataTypes);
     await ClanWarLeagues.sync();
     await ClanWarLeaguesRounds.sync();
     await Members.sync();
-    await Stats.sync();
+    await Stats.sync({
+        // force: true,
+    });
     await WarParticipants.sync();
     await Wars.sync();
 

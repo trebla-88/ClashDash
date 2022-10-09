@@ -32,7 +32,7 @@ module.exports = {
 
         // Connexion aux tables
         const Members = require('../models/Members')(sequelize, Sequelize.DataTypes);
-        const Teams = require('../models/Teams')(sequelize, Sequelize.DataTypes);
+        const Clans = require('../models/Clans')(sequelize, Sequelize.DataTypes);
 
         // Connexion API
         axios
@@ -50,9 +50,9 @@ module.exports = {
                     }
                     // Enregistrement du clan
                     try {
-                        await Teams.create({
-                            team_id: team_tag,
-                            team_name: res.data.name,
+                        await Clans.create({
+                            clan_id: team_tag,
+                            clan_name: res.data.name,
                             });
                         console.log('Team was added successfully.');
                         await interaction.reply('Team was added successfully.');
@@ -66,7 +66,7 @@ module.exports = {
                             await Members.create({
                                 player_id: member.tag,
                                 player_name: member.name,
-                                player_team_tag: team_tag,
+                                clan_id: team_tag,
                             });
                         }
                         console.log('Members were added successfully.');

@@ -57,7 +57,7 @@ async function addTheMembers() {
                             await Members.create({
                                 player_id: member.tag,
                                 player_name: member.name,
-                                player_team_tag: team_tag,
+                                clan_id: team_tag,
                             });
                         }
                     }

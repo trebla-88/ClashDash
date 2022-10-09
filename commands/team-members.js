@@ -37,11 +37,11 @@ module.exports = {
                 const query = await Members.findAll({
                     attributes: ['player_id', 'player_name'],
                     where: {
-                        player_team_tag: team_tag,
+                        clan_id: team_tag,
                     },
                 });
                 // Debugging purposes
-                // console.log(query);
+                console.log(query);
                 let members = '';
 
                 for await (const data of query) {
