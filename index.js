@@ -29,7 +29,7 @@ setInterval(addMembersFunctions.addTheMembers, 60 * 1000);
 setInterval(deleteMembersFunctions.deleteTheMembers, 90 * 1000);
 
 // Update Stats
-setInterval(statsFunctions.updateStats, 60 * 1000);
+setInterval(statsFunctions.updateStats, 30 * 1000);
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isChatInputCommand()) return;

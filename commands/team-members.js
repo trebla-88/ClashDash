@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, codeBlock } = require('discord.js');
 const { Sequelize } = require('sequelize');
+const { dbRoute } = require('../config.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -18,7 +19,7 @@ module.exports = {
             host: 'localhost',
             dialect: 'sqlite',
             logging: false,
-            storage: '/home/trebla/ZDEV/discord/clashdash/database.sqlite',
+            storage: dbRoute,
             freezeTableName: true,
         });
 

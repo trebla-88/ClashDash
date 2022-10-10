@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { apiToken } = require('../config.json');
 const { Sequelize } = require('sequelize');
+const { dbRoute } = require('../config.json');
 
 const myConfig = {
     headers: {
@@ -17,7 +18,7 @@ async function updateStats() {
         host: 'localhost',
         dialect: 'sqlite',
         logging: false,
-        storage: '/home/trebla/ZDEV/discord/clashdash/database.sqlite',
+        storage: dbRoute,
         freezeTableName: true,
     });
 
