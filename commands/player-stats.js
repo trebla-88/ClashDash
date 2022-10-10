@@ -1,7 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { Sequelize, Op } = require('sequelize');
 const { dbRoute } = require('../config.json');
-
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('player-stats')
@@ -54,7 +53,8 @@ module.exports = {
             trophies.push(stat.trophies_count);
         }
 
-        console.log(dates, trophies);
+        // Debugging purposes
+        // console.log(dates, trophies);
 
         const chart = {
             type: 'line',
@@ -71,7 +71,8 @@ module.exports = {
 
         const chartUrl = `https://quickchart.io/chart?c=${encodedChart}`;
 
-        console.log(chartUrl);
+        // Debugging purposes
+        // console.log(chartUrl);
 
 		return interaction.reply(chartUrl);
 	},

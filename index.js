@@ -23,13 +23,13 @@ client.once('ready', () => {
 });
 
 // Add new Team Members
-setInterval(addMembersFunctions.addTheMembers, 60 * 1000);
+setInterval(addMembersFunctions.addTheMembers, 30 * 60 * 1000);
 
 // Delete old Team Members
-setInterval(deleteMembersFunctions.deleteTheMembers, 90 * 1000);
+setInterval(deleteMembersFunctions.deleteTheMembers, 24 * 60 * 1000);
 
 // Update Stats
-setInterval(statsFunctions.updateStats, 30 * 1000);
+setInterval(statsFunctions.updateStats, 60 * 60 * 1000);
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isChatInputCommand()) return;
