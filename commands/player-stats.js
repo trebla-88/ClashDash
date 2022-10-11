@@ -14,24 +14,24 @@ module.exports = {
         .addStringOption(option =>
             option.setName('category')
                 .setDescription('Stats category.')
-                .setRequired(true))
+                .setRequired(true)
                 .addChoices(
                     { name: 'Trophies', value: 'trophies' },
                     { name: 'War Stars', value: 'stars' },
                     { name: 'Donations', value: 'donations' },
                     { name: 'Contributions', value: 'contributions' },
-                )
+                ))
         .addStringOption(option =>
             option.setName('time')
                 .setDescription('Time range.')
-                .setRequired(true))
+                .setRequired(true)
                 .addChoices(
                     { name: 'Day', value: 'day' },
                     { name: 'Week', value: 'week' },
                     { name: 'Month', value: 'month' },
                     { name: 'Year', value: 'year' },
                     { name: 'All Time', value: 'all-time' },
-                ),
+                )),
 	async execute(interaction) {
         // Connexion à la base de données
         const sequelize = new Sequelize('database', 'username', 'password', {
