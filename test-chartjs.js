@@ -32,8 +32,7 @@ chart.setConfig({
     },
 });
 
-const date = new Date();
-const dateB = new Date(new Date() - 24 * 60 * 60 * 1000);
-console.log(date, '\n', dateB);
+const date = new Date('2022-10-11 10:20:47.456 +00:00');
+console.log(date.getHours());
 
 console.log(chart.getUrl());

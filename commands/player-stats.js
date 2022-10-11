@@ -54,9 +54,12 @@ module.exports = {
         }
 
         // Récupération options
-        const player_tag = interaction.options.getString('player_tag');
+        const player_tag = interaction.options.getString('player-tag');
         const category = interaction.options.getString('category');
         const time = interaction.options.getString('time');
+
+        // For debugging purposes
+        // console.log(player_tag, category, time);
 
         // Choix des attributs
         const atr = ['stats_date'];
@@ -74,6 +77,9 @@ module.exports = {
                 atr.push('contributions_count');
                 break;
         }
+
+        // For debugging purposes
+        // console.log(atr);
 
         let date = new Date();
 
@@ -111,16 +117,21 @@ module.exports = {
 
         // Debugging purposes
         // console.log(query);
+        // console.log(player_tag, date, category, time);
 
         // Raccourcissement de la liste
         let querySmall = [];
         switch (time) {
             case 'day':
+                for (const elem of query) {
+                    elem.stats_date = elem.stats_date.slice(11, 16);
+                }
                 querySmall = query;
                 break;
             case 'week':
                 for (const elem of query) {
-                    if (querySmall != [] || querySmall[-1].stats_date.getDate != elem.stats_date.getDate) {
+                    if (querySmall == [] || Date(querySmall[-1].stats_date).getDate() != Date(elem.stats_date).getDate()) {
+                        elem.stats_date = elem.stats_date.getDate;
                         querySmall.push(elem);
                     }
                 }
@@ -128,6 +139,7 @@ module.exports = {
             case 'month':
                 for (const elem of query) {
                     if (querySmall != [] || querySmall[-1].stats_date.getDate != elem.stats_date.getDate) {
+                        elem.stats_date = elem.stats_date.getDate;
                         querySmall.push(elem);
                     }
                 }
@@ -135,6 +147,7 @@ module.exports = {
             case 'year':
                 for (const elem of query) {
                     if (querySmall != [] || querySmall[-1].stats_date.getMonth != elem.stats_date.getMonth) {
+                        elem.stats_date = elem.stats_date.getMonth;
                         querySmall.push(elem);
                     }
                 }
@@ -142,6 +155,7 @@ module.exports = {
             case 'all-time':
                 for (const elem of query) {
                     if (querySmall != [] || querySmall[-1].stats_date.getFullYear != elem.stats_date.getFullYear) {
+                        elem.stats_date = elem.stats_date.getFullYear;
                         querySmall.push(elem);
                     }
                 }
@@ -180,7 +194,7 @@ module.exports = {
         }
 
         // Debugging purposes
-        // console.log(dates, trophies);
+        // console.log(dates, data);
 
         const chart = new QuickChart();
 
@@ -211,6 +225,7 @@ module.exports = {
         // Debugging purposes
         // console.log(chartUrl);
 
+        console.log('Command /player-stats success.');
 		return interaction.reply(chart.getUrl());
 	},
 };

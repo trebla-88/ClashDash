@@ -42,7 +42,7 @@ module.exports = {
                     },
                 });
                 // Debugging purposes
-                console.log(query);
+                // console.log(query);
                 let members = '';
 
                 for await (const data of query) {
