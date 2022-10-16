@@ -126,36 +126,48 @@ module.exports = {
                 for (const elem of query) {
                     elem.stats_date = elem.stats_date.slice(11, 16);
                 }
-                querySmall = query;
+                querySmall = query.slice();
                 break;
             case 'week':
                 for (const elem of query) {
-                    if (querySmall == [] || Date(querySmall[-1].stats_date).getDate() != Date(elem.stats_date).getDate()) {
-                        elem.stats_date = elem.stats_date.getDate;
+                    if (querySmall.length == 0) {
+                        elem.stats_date = new Date(elem.stats_date).getDate();
+                        querySmall.push(elem);
+                    } else if (querySmall.slice(-1)[0].stats_date != new Date(elem.stats_date).getDate()) {
+                        elem.stats_date = new Date(elem.stats_date).getDate();
                         querySmall.push(elem);
                     }
                 }
                 break;
             case 'month':
                 for (const elem of query) {
-                    if (querySmall != [] || querySmall[-1].stats_date.getDate != elem.stats_date.getDate) {
-                        elem.stats_date = elem.stats_date.getDate;
+                    if (querySmall.length == 0) {
+                        elem.stats_date = new Date(elem.stats_date).getDate();
+                        querySmall.push(elem);
+                    } else if (querySmall.slice(-1)[0].stats_date != new Date(elem.stats_date).getDate()) {
+                        elem.stats_date = new Date(elem.stats_date).getDate();
                         querySmall.push(elem);
                     }
                 }
                 break;
             case 'year':
                 for (const elem of query) {
-                    if (querySmall != [] || querySmall[-1].stats_date.getMonth != elem.stats_date.getMonth) {
-                        elem.stats_date = elem.stats_date.getMonth;
+                    if (querySmall.length == 0) {
+                        elem.stats_date = new Date(elem.stats_date).getMonth();
+                        querySmall.push(elem);
+                    } else if (querySmall.slice(-1)[0].stats_date != new Date(elem.stats_date).getMonth()) {
+                        elem.stats_date = new Date(elem.stats_date).getMonth();
                         querySmall.push(elem);
                     }
                 }
                 break;
             case 'all-time':
                 for (const elem of query) {
-                    if (querySmall != [] || querySmall[-1].stats_date.getFullYear != elem.stats_date.getFullYear) {
-                        elem.stats_date = elem.stats_date.getFullYear;
+                    if (querySmall.length == 0) {
+                        elem.stats_date = new Date(elem.stats_date).getFullYear();
+                        querySmall.push(elem);
+                    } else if (querySmall.slice(-1)[0].stats_date != new Date(elem.stats_date).getFullYear()) {
+                        elem.stats_date = new Date(elem.stats_date).getFullYear();
                         querySmall.push(elem);
                     }
                 }
@@ -221,6 +233,8 @@ module.exports = {
                 },
             },
         });
+
+        chart.setBackgroundColor('rgba(0, 0, 0, 0)');
 
         // Debugging purposes
         // console.log(chartUrl);
