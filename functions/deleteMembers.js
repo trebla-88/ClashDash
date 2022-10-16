@@ -80,7 +80,7 @@ async function deleteTheMember(playerId) {
         host: 'localhost',
         dialect: 'sqlite',
         logging: false,
-        storage: '/home/trebla/ZDEV/discord/clashdash/database.sqlite',
+        storage: dbRoute,
         freezeTableName: true,
     });
 
