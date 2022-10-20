@@ -63,18 +63,23 @@ module.exports = {
 
         // Choix des attributs
         const atr = ['stats_date'];
+        let categoryLabel = '';
         switch (category) {
             case 'trophies':
                 atr.push('trophies_count');
+                categoryLabel = 'Trophies';
                 break;
             case 'stars':
                 atr.push('star_count');
+                categoryLabel = 'Stars';
                 break;
             case 'donations':
                 atr.push('donations_count');
+                categoryLabel = 'Donations';
                 break;
             case 'contributions':
                 atr.push('contributions_count');
+                categoryLabel = 'Contributions';
                 break;
         }
 
@@ -217,11 +222,12 @@ module.exports = {
             data: {
                 labels: dates,
                 datasets: [{
-                    label: category,
+                    label: categoryLabel,
                     data: data,
-                    fill: false,
+                    fill: true,
                     tension: 0.3,
-                    borderColor: '#cc65fe',
+                    borderColor: 'rgba(142, 68, 173, 0.3)',
+                    backgroundColor: 'rgba(142, 68, 173, 0.1)',
                 }],
             },
             options: {
@@ -234,7 +240,7 @@ module.exports = {
             },
         });
 
-        chart.setBackgroundColor('rgba(0, 0, 0, 0)');
+        // chart.setBackgroundColor('rgba(0, 0, 0, 0)');
 
         // Debugging purposes
         // console.log(chartUrl);
