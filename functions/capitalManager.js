@@ -15,7 +15,7 @@ async function checkStatus() {
 
     // Affichage de la date
     const date = new Date();
-    console.log(date);
+    console.log(date, 'CapitalRaids update.');
 
     /*
     // Initialization currentRaidDate
