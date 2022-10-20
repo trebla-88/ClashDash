@@ -36,10 +36,10 @@ const Wars = require('./models/Wars.js')(sequelize, Sequelize.DataTypes);
 
     // Sync
     await Capital.sync({
-        force: true,
+        // force: true,
     });
     await CapitalParticipants.sync({
-        force: true,
+        // force: true,
     });
     await ClanGames.sync();
     await ClanGamesParticipants.sync();
