@@ -5,6 +5,7 @@ const { token } = require('./config.json');
 const addMembersFunctions = require('./functions/addMembers.js');
 const deleteMembersFunctions = require('./functions/deleteMembers.js');
 const statsFunctions = require('./functions/stats.js');
+const capitalManager = require('./functions/capitalManager.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -30,6 +31,9 @@ setInterval(deleteMembersFunctions.deleteTheMembers, 24 * 60 * 1000);
 
 // Update Stats
 setInterval(statsFunctions.updateStats, 60 * 60 * 1000);
+
+// Update CapitalRaids
+setInterval(capitalManager.checkStatus, 5 * 60 * 1000);
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isChatInputCommand()) return;

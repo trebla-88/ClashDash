@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
 		points_count: {
 			type: DataTypes.INTEGER,
 		},
+		attacks_count: {
+			type: DataTypes.INTEGER,
+		},
+		player_name: {
+			type: DataTypes.STRING,
+		},
 	}, {
 		timestamps: false,
 	});
