@@ -8,7 +8,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
     freezeTableName: true,
 });
 
-const Capital = require('./models/Capital.js')(sequelize, Sequelize.DataTypes);
+const Capital = require('./models/Capitals.js')(sequelize, Sequelize.DataTypes);
 const CapitalParticipants = require('./models/CapitalParticipants.js')(sequelize, Sequelize.DataTypes);
 const ClanGames = require('./models/ClanGames.js')(sequelize, Sequelize.DataTypes);
 const ClanGamesParticipants = require('./models/ClanGamesParticipants.js')(sequelize, Sequelize.DataTypes);
@@ -35,8 +35,12 @@ const Wars = require('./models/Wars.js')(sequelize, Sequelize.DataTypes);
     */
 
     // Sync
-    await Capital.sync();
-    await CapitalParticipants.sync();
+    await Capital.sync({
+        force: true,
+    });
+    await CapitalParticipants.sync({
+        force: true,
+    });
     await ClanGames.sync();
     await ClanGamesParticipants.sync();
     await Clans.sync();
