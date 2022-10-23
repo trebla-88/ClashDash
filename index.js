@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const { token } = require('./config.json');
+const { Client, Collection, GatewayIntentBits, codeBlock } = require('discord.js');
+const { token, environment } = require('./config.json');
 const addMembersFunctions = require('./functions/addMembers.js');
 const deleteMembersFunctions = require('./functions/deleteMembers.js');
 const statsFunctions = require('./functions/stats.js');
@@ -20,7 +20,9 @@ for (const file of commandFiles) {
 }
 
 client.once('ready', () => {
-	console.log('Ready!');
+	console.log(new Date(), 'Ready!');
+	const channel = client.channels.cache.get('1033369410519445604');
+	channel.send(codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'Ready!'));
 });
 
 // Add new Team Members
