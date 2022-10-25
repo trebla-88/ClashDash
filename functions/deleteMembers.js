@@ -1,13 +1,19 @@
 const axios = require('axios');
 const { apiToken } = require('../config.json');
 const { Sequelize } = require('sequelize');
-const { dbRoute } = require('../config.json');
+
+const { dbRoute, token, environment } = require('../config.json');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v10');
+const { codeBlock } = require('discord.js');
 
 const myConfig = {
     headers: {
         Authorization: 'Bearer ' + apiToken,
     },
 };
+
+const rest = new REST({ version: '10' }).setToken(token);
 
 async function deleteTheMembers() {
     // Team Tag Definition
@@ -67,7 +73,25 @@ async function deleteTheMembers() {
                     } else {
                         console.log('Members were deleted with success.');
                     }
+                    try {
+                        await rest.post(Routes.channelMessages('1033369410519445604'), {
+                            body: {
+                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'deleteTheMembers: success.'),
+                            },
+                        });
+                    } catch (error) {
+                        console.error(error);
+                    }
                 } catch (error) {
+                    try {
+                        await rest.post(Routes.channelMessages('1033369410519445604'), {
+                            body: {
+                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'deleteTheMembers: fail.'),
+                            },
+                        });
+                    } catch (err) {
+                        console.error(err);
+                    }
                     console.error('Error:', error);
                 }
             })();

@@ -1,7 +1,13 @@
 const axios = require('axios');
 const { apiToken } = require('../config.json');
 const { Sequelize } = require('sequelize');
-const { dbRoute } = require('../config.json');
+
+const { dbRoute, token, environment } = require('../config.json');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v10');
+const { codeBlock } = require('discord.js');
+
+const rest = new REST({ version: '10' }).setToken(token);
 
 const myConfig = {
     headers: {
@@ -123,7 +129,25 @@ async function checkStatus() {
                         // Ajout du raid à la base de données
                         addRaidData(team_tag);
                     }
+                    try {
+                        await rest.post(Routes.channelMessages('1033369410519445604'), {
+                            body: {
+                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'checkStatus: success.'),
+                            },
+                        });
+                    } catch (error) {
+                        console.error(error);
+                    }
                 } catch (error) {
+                    try {
+                        await rest.post(Routes.channelMessages('1033369410519445604'), {
+                            body: {
+                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'checkStatus: fail.'),
+                            },
+                        });
+                    } catch (err) {
+                        console.error(err);
+                    }
                     console.error('Unable to count raids:', error);
                 }
             })();
@@ -189,7 +213,25 @@ async function addRaidData(team_tag) {
                             player_name: member.name,
                         });
                     }
+                    try {
+                        await rest.post(Routes.channelMessages('1033369410519445604'), {
+                            body: {
+                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'addRaidData: success.'),
+                            },
+                        });
+                    } catch (error) {
+                        console.error(error);
+                    }
                 } catch (error) {
+                    try {
+                        await rest.post(Routes.channelMessages('1033369410519445604'), {
+                            body: {
+                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'addRaidData: fail.'),
+                            },
+                        });
+                    } catch (err) {
+                        console.error(err);
+                    }
                     console.error('Unable to add CapitalParticipants data:', error);
                 }
             })();
@@ -261,7 +303,25 @@ async function updateRaidData(team_tag) {
                             },
                         });
                     }
+                    try {
+                        await rest.post(Routes.channelMessages('1033369410519445604'), {
+                            body: {
+                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'updateRaidData: success.'),
+                            },
+                        });
+                    } catch (error) {
+                        console.error(error);
+                    }
                 } catch (error) {
+                    try {
+                        await rest.post(Routes.channelMessages('1033369410519445604'), {
+                            body: {
+                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'updateRaidData: fail.'),
+                            },
+                        });
+                    } catch (err) {
+                        console.error(err);
+                    }
                     console.error('Unable to update CapitalParticipants data:', error);
                 }
             })();

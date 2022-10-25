@@ -1,7 +1,13 @@
 const axios = require('axios');
 const { apiToken } = require('../config.json');
 const { Sequelize } = require('sequelize');
-const { dbRoute } = require('../config.json');
+
+const { dbRoute, token, environment } = require('../config.json');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v10');
+const { codeBlock } = require('discord.js');
+
+const rest = new REST({ version: '10' }).setToken(token);
 
 const myConfig = {
     headers: {
@@ -77,8 +83,25 @@ async function updateStats() {
                     })();
                 });
             }
-
+            try {
+                await rest.post(Routes.channelMessages('1033369410519445604'), {
+                    body: {
+                        content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'updateStats: success.'),
+                    },
+                });
+            } catch (error) {
+                console.error(error);
+            }
         } catch (error) {
+            try {
+                await rest.post(Routes.channelMessages('1033369410519445604'), {
+                    body: {
+                        content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'updateStats: fail.'),
+                    },
+                });
+            } catch (err) {
+                console.error(err);
+            }
             console.error('Error:', error);
         }
     })();
