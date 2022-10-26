@@ -40,6 +40,7 @@ async function checkStatus() {
             const currentRaidDate = new Date(convertToISODate8601(res.data.items[0].startTime));
             const state = res.data.items[0].state;
             const capitalTotalLoot = res.data.items[0].capitalTotalLoot;
+            const membersCount = res.data.items[0].members.length;
 
             // For debugging purposes
             // console.log(currentRaidDate, state);
@@ -55,6 +56,7 @@ async function checkStatus() {
 
             // Connexion aux tables
             const Capitals = require('../models/Capitals')(sequelize, Sequelize.DataTypes);
+            const CapitalParticipants = require('../models/CapitalParticipants')(sequelize, Sequelize.DataTypes);
 
             // Requête pour chercher la date du dernier Raid dans la BD
             (async () => {
@@ -104,8 +106,7 @@ async function checkStatus() {
                     // Cas où le raid est terminé et dans la BD
                     else if (count == 1 && state == 'ended') {
                         // Pour savoir si il reste des données à mettre à jour
-                        const query = await Capitals.findAll({
-                            attributes: ['total_points_count'],
+                        const countParticipants = await CapitalParticipants.count({
                             where: {
                                 clan_id: team_tag,
                                 raid_date: currentRaidDate,
@@ -113,12 +114,10 @@ async function checkStatus() {
                             raw: true,
                         });
                         // Tout est à jour
-                        if (capitalTotalLoot == query[0].total_points_count) {
+                        if (membersCount == countParticipants) {
                             // Evènement terminé
                             console.log('No update needed.');
-                        }
-                        // Il reste une dernière mise à jour à faire
-                        else {
+                        } else {
                             // Mise à jour du raid dans la base de données
                             console.log('Last update needed.');
                             updateRaidData(team_tag);
@@ -291,17 +290,38 @@ async function updateRaidData(team_tag) {
                 }
                 try {
                     for (const member of members) {
-                        await CapitalParticipants.update({
-                            points_count: member.capitalResourcesLooted,
-                            attacks_count: member.attacks,
-                            player_name: member.name,
-                        }, {
+                        const count = await CapitalParticipants.count({
                             where: {
                                 player_id: member.tag,
                                 raid_date: currentRaidDate,
-                                clan_id: team_tag,
                             },
+                            raw: true,
                         });
+                        // Si le joueur est déjà renseigné dans la BD
+                        if (count == 1) {
+                            await CapitalParticipants.update({
+                                points_count: member.capitalResourcesLooted,
+                                attacks_count: member.attacks,
+                                player_name: member.name,
+                            }, {
+                                where: {
+                                    player_id: member.tag,
+                                    raid_date: currentRaidDate,
+                                    clan_id: team_tag,
+                                },
+                            });
+                        }
+                        // Sinon, il faut l'ajouter
+                        else {
+                            await CapitalParticipants.create({
+                                player_id: member.tag,
+                                raid_date: currentRaidDate,
+                                clan_id: team_tag,
+                                points_count: member.capitalResourcesLooted,
+                                attacks_count: member.attacks,
+                                player_name: member.name,
+                            });
+                        }
                     }
                     try {
                         await rest.post(Routes.channelMessages('1033369410519445604'), {
@@ -324,6 +344,57 @@ async function updateRaidData(team_tag) {
                     }
                     console.error('Unable to update CapitalParticipants data:', error);
                 }
+            })();
+        });
+}
+
+async function raidStatsEmbed(team_tag) {
+    // Connexion à la base de données
+    const sequelize = new Sequelize('database', 'username', 'password', {
+        host: 'localhost',
+        dialect: 'sqlite',
+        logging: false,
+        storage: dbRoute,
+        freezeTableName: true,
+    });
+
+    // Connexion aux tables
+    const Capitals = require('../models/Capitals')(sequelize, Sequelize.DataTypes);
+    const CapitalParticipants = require('../models/CapitalParticipants')(sequelize, Sequelize.DataTypes);
+    const Members = require('../models/Members')(sequelize, Sequelize.DataTypes);
+
+    axios
+    .get('https://api.clashofclans.com/v1/clans/%23' + team_tag + '/capitalraidseasons?limit=1', myConfig)
+        .catch(error => {
+            console.log(error);
+        })
+        .then(res => {
+            const currentRaidDate = new Date(convertToISODate8601(res.data.items[0].startTime));
+            const totalAttacks = res.data.items[0].totalAttacks;
+            const raidsCompleted = res.data.items[0].raidsCompleted;
+
+            (async () => {
+                // On regarde pour la liste des membres du clans les résultats du dernier raid
+                // Récupération données DB
+                const queryAllMembers = await Members.findAll({
+                    attributes: ['player_id'],
+                    where: {
+                        clan_id: team_tag,
+                    },
+                    raw: true,
+                });
+                // Recherche de tous les membres ayant participés au dernier RAID
+                const queryAllParticipants = await CapitalParticipants.findAll({
+                    attributes: ['points_count', 'attacks_count', 'player_name'],
+                    where: {
+                        raid_date: currentRaidDate,
+                        clan_id: team_tag,
+                    },
+                    raw: true,
+                });
+
+                // For debugging purposes
+                console.log(queryAllMembers, queryAllParticipants);
             })();
         });
 }
@@ -364,4 +435,5 @@ function convertToISODate8601(strDate) {
 
 module.exports = {
     checkStatus,
+    raidStatsEmbed,
 };
