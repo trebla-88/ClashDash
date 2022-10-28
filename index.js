@@ -23,19 +23,19 @@ client.once('ready', () => {
 	console.log(new Date(), 'Ready!');
 	const channel = client.channels.cache.get('1033369410519445604');
 	channel.send(codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'Ready!'));
+
+	// Add new Team Members
+	setInterval(addMembersFunctions.addTheMembers, 30 * 60 * 1000);
+
+	// Delete old Team Members
+	setInterval(deleteMembersFunctions.deleteTheMembers, 24 * 60 * 1000);
+
+	// Update Stats
+	setInterval(statsFunctions.updateStats, 60 * 60 * 1000);
+
+	// Update CapitalRaids
+	setInterval(capitalManager.checkStatus, 5 * 60 * 1000, client);
 });
-
-// Add new Team Members
-setInterval(addMembersFunctions.addTheMembers, 30 * 60 * 1000);
-
-// Delete old Team Members
-setInterval(deleteMembersFunctions.deleteTheMembers, 24 * 60 * 1000);
-
-// Update Stats
-setInterval(statsFunctions.updateStats, 60 * 60 * 1000);
-
-// Update CapitalRaids
-setInterval(capitalManager.checkStatus, 5 * 60 * 1000);
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isChatInputCommand()) return;

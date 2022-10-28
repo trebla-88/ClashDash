@@ -16,6 +16,7 @@ const Clans = require('./models/Clans.js')(sequelize, Sequelize.DataTypes);
 const ClanWarLeagues = require('./models/ClanWarLeagues.js')(sequelize, Sequelize.DataTypes);
 const ClanWarLeaguesRounds = require('./models/ClanWarLeaguesRounds.js')(sequelize, Sequelize.DataTypes);
 const Members = require('./models/Members.js')(sequelize, Sequelize.DataTypes);
+const Servers = require('./models/Servers.js')(sequelize, Sequelize.DataTypes);
 const Stats = require('./models/Stats.js')(sequelize, Sequelize.DataTypes);
 const WarParticipants = require('./models/WarParticipants.js')(sequelize, Sequelize.DataTypes);
 const Wars = require('./models/Wars.js')(sequelize, Sequelize.DataTypes);
@@ -47,6 +48,9 @@ const Wars = require('./models/Wars.js')(sequelize, Sequelize.DataTypes);
     await ClanWarLeagues.sync();
     await ClanWarLeaguesRounds.sync();
     await Members.sync();
+    await Servers.sync({
+        // force: true,
+    });
     await Stats.sync({
         // force: true,
     });

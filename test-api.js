@@ -9,6 +9,8 @@ const myConfig = {
 
 axios
   // TEAM
+  // Get Raids Info
+  .get('https://api.clashofclans.com/v1/clans/%232PVYQOOR/capitalraidseasons?limit=1', myConfig)
   // Get TeamInfo
   // .get('https://api.clashofclans.com/v1/clans/%232PVYQOOR', myConfig)
   // Get Team Members
@@ -25,7 +27,7 @@ axios
   // .get('https://api.clashofclans.com/v1/clans/%232PVYQOOR/currentwar', myConfig)
   // PLAYER
   // Get Player Info
-  .get('https://api.clashofclans.com/v1/players/%232PRJVLY29', myConfig)
+  // .get('https://api.clashofclans.com/v1/players/%232PRJVLY29', myConfig)
   .then(res => {
     console.log(`statusCode: ${res.status}`);
     console.log(res.data);

@@ -1,13 +1,10 @@
 const axios = require('axios');
 const { apiToken } = require('../config.json');
 const { Sequelize } = require('sequelize');
+const { EmbedBuilder } = require('discord.js');
 
-const { dbRoute, token, environment } = require('../config.json');
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
+const { dbRoute, environment, embedChannelID } = require('../config.json');
 const { codeBlock } = require('discord.js');
-
-const rest = new REST({ version: '10' }).setToken(token);
 
 const myConfig = {
     headers: {
@@ -15,7 +12,7 @@ const myConfig = {
     },
 };
 
-async function checkStatus() {
+async function checkStatus(client) {
     // Team Tag Definition
     const team_tag = '2PVYQOOR';
 
@@ -80,7 +77,7 @@ async function checkStatus() {
                     // Cas où le raid vient juste de commencer
                     if (count == 0 && state != 'ended') {
                         // Ajout du raid à la base de données
-                        addRaidData(team_tag);
+                        addRaidData(client, team_tag);
                     }
                     // Cas où le raid est déjà dans la BD et est en cours
                     else if (count == 1 && state != 'ended') {
@@ -100,7 +97,7 @@ async function checkStatus() {
                         } else {
                             // Mise à jour du raid dans la base de données
                             console.log('Update needed.');
-                            updateRaidData(team_tag);
+                            updateRaidData(client, team_tag);
                         }
                     }
                     // Cas où le raid est terminé et dans la BD
@@ -120,40 +117,39 @@ async function checkStatus() {
                         } else {
                             // Mise à jour du raid dans la base de données
                             console.log('Last update needed.');
-                            updateRaidData(team_tag);
+                            updateRaidData(client, team_tag);
                         }
                     }
                     // Cas où le raid est terminé et non dans la BD
                     else {
                         // Ajout du raid à la base de données
-                        addRaidData(team_tag);
+                        addRaidData(client, team_tag);
                     }
                     try {
-                        await rest.post(Routes.channelMessages('1033369410519445604'), {
-                            body: {
-                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'checkStatus: success.'),
-                            },
-                        });
+                        const channel = client.channels.cache.get('1033369410519445604');
+                        await channel.send(codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'checkStatus: success.'));
                     } catch (error) {
                         console.error(error);
                     }
                 } catch (error) {
                     try {
-                        await rest.post(Routes.channelMessages('1033369410519445604'), {
-                            body: {
-                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'checkStatus: fail.'),
-                            },
-                        });
+                        const channel = client.channels.cache.get('1033369410519445604');
+                        await channel.send(codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'checkStatus: fail.'));
                     } catch (err) {
                         console.error(err);
                     }
                     console.error('Unable to count raids:', error);
                 }
+                try {
+                    raidStatsEmbed(client, team_tag);
+                } catch (error) {
+                    console.log(error);
+                }
             })();
         });
 }
 
-async function addRaidData(team_tag) {
+async function addRaidData(client, team_tag) {
     // Connexion à la base de données
     const sequelize = new Sequelize('database', 'username', 'password', {
         host: 'localhost',
@@ -213,21 +209,15 @@ async function addRaidData(team_tag) {
                         });
                     }
                     try {
-                        await rest.post(Routes.channelMessages('1033369410519445604'), {
-                            body: {
-                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'addRaidData: success.'),
-                            },
-                        });
+                        const channel = client.channels.cache.get('1033369410519445604');
+                        await channel.send(codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'addRaidData: success.'));
                     } catch (error) {
                         console.error(error);
                     }
                 } catch (error) {
                     try {
-                        await rest.post(Routes.channelMessages('1033369410519445604'), {
-                            body: {
-                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'addRaidData: fail.'),
-                            },
-                        });
+                        const channel = client.channels.cache.get('1033369410519445604');
+                        await channel.send(codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'addRaidData: fail.'));
                     } catch (err) {
                         console.error(err);
                     }
@@ -237,7 +227,7 @@ async function addRaidData(team_tag) {
         });
 }
 
-async function updateRaidData(team_tag) {
+async function updateRaidData(client, team_tag) {
     // Connexion à la base de données
     const sequelize = new Sequelize('database', 'username', 'password', {
         host: 'localhost',
@@ -324,21 +314,17 @@ async function updateRaidData(team_tag) {
                         }
                     }
                     try {
-                        await rest.post(Routes.channelMessages('1033369410519445604'), {
-                            body: {
-                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'updateRaidData: success.'),
-                            },
-                        });
+                        // Définition des salons
+                        const channel = client.channels.cache.get('1033369410519445604');
+                        await channel.send(codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'updateRaidData: success.'));
                     } catch (error) {
                         console.error(error);
                     }
                 } catch (error) {
                     try {
-                        await rest.post(Routes.channelMessages('1033369410519445604'), {
-                            body: {
-                                content: codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'updateRaidData: fail.'),
-                            },
-                        });
+                        // Définition des salons
+                        const channel = client.channels.cache.get('1033369410519445604');
+                        await channel.send(codeBlock('js', '[' + environment + ']' + '[' + new Date().toLocaleString() + ']: ' + 'updateRaidData: fail.'));
                     } catch (err) {
                         console.error(err);
                     }
@@ -348,7 +334,7 @@ async function updateRaidData(team_tag) {
         });
 }
 
-async function raidStatsEmbed(team_tag) {
+async function raidStatsEmbed(client, team_tag) {
     // Connexion à la base de données
     const sequelize = new Sequelize('database', 'username', 'password', {
         host: 'localhost',
@@ -359,9 +345,12 @@ async function raidStatsEmbed(team_tag) {
     });
 
     // Connexion aux tables
-    const Capitals = require('../models/Capitals')(sequelize, Sequelize.DataTypes);
     const CapitalParticipants = require('../models/CapitalParticipants')(sequelize, Sequelize.DataTypes);
     const Members = require('../models/Members')(sequelize, Sequelize.DataTypes);
+    const Servers = require('../models/Servers.js')(sequelize, Sequelize.DataTypes);
+
+    // Définition des salons
+    const channel = client.channels.cache.get(embedChannelID);
 
     axios
     .get('https://api.clashofclans.com/v1/clans/%23' + team_tag + '/capitalraidseasons?limit=1', myConfig)
@@ -377,7 +366,7 @@ async function raidStatsEmbed(team_tag) {
                 // On regarde pour la liste des membres du clans les résultats du dernier raid
                 // Récupération données DB
                 const queryAllMembers = await Members.findAll({
-                    attributes: ['player_id'],
+                    attributes: ['player_id', 'player_name'],
                     where: {
                         clan_id: team_tag,
                     },
@@ -385,16 +374,111 @@ async function raidStatsEmbed(team_tag) {
                 });
                 // Recherche de tous les membres ayant participés au dernier RAID
                 const queryAllParticipants = await CapitalParticipants.findAll({
-                    attributes: ['points_count', 'attacks_count', 'player_name'],
+                    attributes: ['player_id', 'points_count', 'attacks_count', 'player_name'],
                     where: {
                         raid_date: currentRaidDate,
                         clan_id: team_tag,
                     },
                     raw: true,
                 });
-
                 // For debugging purposes
-                console.log(queryAllMembers, queryAllParticipants);
+                // console.log(queryAllMembers, queryAllParticipants);
+
+                // On parcourt la liste des membres du clan
+                // Initialisation variable
+                const result = [];
+                for (const clanMember of queryAllMembers) {
+                    const clanMemberId = clanMember.player_id;
+                    let exist = false;
+                    for (const raidParticipant of queryAllParticipants) {
+                        if (raidParticipant.player_id == clanMemberId) {
+                            exist = true;
+                            const memberData = {
+                                player_id: raidParticipant.player_id,
+                                player_name: raidParticipant.player_name,
+                                attacks_count: raidParticipant.attacks_count,
+                                points_count: raidParticipant.points_count,
+                            };
+                            result.push(memberData);
+                        }
+                    }
+                    if (exist == false) {
+                        const memberData = {
+                            player_id: clanMember.player_id,
+                            player_name: clanMember.player_name,
+                            attacks_count: 0,
+                            points_count: 0,
+                        };
+                        result.push(memberData);
+                    }
+                }
+                // For debugging purposes
+                // console.log(result);
+
+                // Sort values
+                result.sort((a, b) => b.points_count - a.points_count);
+
+                // Converting JS object to string
+                let strData = '';
+                let pos = 1;
+                strData += 'Pos' + '  ' + 'Name' + '                ' + 'Attacks' + '    ' + 'Points' + '\n';
+                for (const member of result) {
+                    strData += pos.toString() + '   ';
+                    if (pos <= 9) {
+                        strData += ' ';
+                    }
+                    strData += member.player_name;
+                    for (let k = 0; k < 20 - member.player_name.length; k++) {
+                        strData += ' ';
+                    }
+                    strData += member.attacks_count + '/6' + '        ';
+                    strData += member.points_count + '\n';
+                    pos++;
+                }
+
+                const raidInfoEmbed = new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle('Capital Raid : ' + currentRaidDate.toLocaleDateString())
+                    .setDescription(codeBlock(strData));
+
+                // Regarder si c'est la première fois que le message est envoyé ou non
+                const embedExist = await Servers.count({
+                    where: {
+                        clan_id: team_tag,
+                        server_id: '1029684252075380736',
+                    },
+                    raw: true,
+                });
+
+                // Première fois
+                if (embedExist == 0) {
+                    channel.send({ embeds: [raidInfoEmbed] })
+                        .then(data => {
+                            (async () => {
+                                console.log('Test');
+                                await Servers.create({
+                                    last_raid_info_embed_id: data.id.toString(),
+                                    clan_id: team_tag,
+                                    server_id: '1029684252075380736',
+                                });
+                            })();
+                        })
+                        .catch(console.error);
+                }
+                // Sinon, existe déjà
+                else {
+                    const queryEmbedID = await Servers.findAll({
+                        attributes: ['last_raid_info_embed_id'],
+                        where: {
+                            clan_id: team_tag,
+                            server_id: '1029684252075380736',
+                        },
+                        raw: true,
+                    });
+                    channel.messages.fetch(queryEmbedID[0].last_raid_info_embed_id)
+                        .then(message => message.edit({ embeds: [raidInfoEmbed] }))
+                        .catch(console.error);
+                }
             })();
         });
 }
@@ -435,5 +519,4 @@ function convertToISODate8601(strDate) {
 
 module.exports = {
     checkStatus,
-    raidStatsEmbed,
 };
