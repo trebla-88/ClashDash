@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { apiToken } = require('../config.json');
 const { Sequelize } = require('sequelize');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, bold, underscore } = require('discord.js');
 
 const { dbRoute, environment, embedChannelID } = require('../config.json');
 const { codeBlock } = require('discord.js');
@@ -361,6 +361,9 @@ async function raidStatsEmbed(client, team_tag) {
             const currentRaidDate = new Date(convertToISODate8601(res.data.items[0].startTime));
             const totalAttacks = res.data.items[0].totalAttacks;
             const raidsCompleted = res.data.items[0].raidsCompleted;
+            const enemyDistrictsDestroyed = res.data.items[0].enemyDistrictsDestroyed;
+            const participationPercentage = Math.floor(res.data.items[0].totalAttacks / res.data.items[0].members.length);
+            const capitalTotalLoot = res.data.items[0].capitalTotalLoot;
 
             (async () => {
                 // On regarde pour la liste des membres du clans les résultats du dernier raid
@@ -421,17 +424,16 @@ async function raidStatsEmbed(client, team_tag) {
                 // Converting JS object to string
                 let strData = '';
                 let pos = 1;
-                strData += 'Pos' + '  ' + 'Name' + '                ' + 'Attacks' + '    ' + 'Points' + '\n';
+                strData += 'Pos' + '  ' + 'Name' + '              ' + 'Points' + '\n\n';
                 for (const member of result) {
                     strData += pos.toString() + '   ';
                     if (pos <= 9) {
                         strData += ' ';
                     }
                     strData += member.player_name;
-                    for (let k = 0; k < 20 - member.player_name.length; k++) {
+                    for (let k = 0; k < 18 - member.player_name.length; k++) {
                         strData += ' ';
                     }
-                    strData += member.attacks_count + '/6' + '        ';
                     strData += member.points_count + '\n';
                     pos++;
                 }
@@ -439,7 +441,15 @@ async function raidStatsEmbed(client, team_tag) {
                 const raidInfoEmbed = new EmbedBuilder()
                     .setColor(0x0099FF)
                     .setTitle('Capital Raid : ' + currentRaidDate.toLocaleDateString())
-                    .setDescription(codeBlock(strData));
+                    .addFields(
+                        { name: 'Total Attacks', value: totalAttacks.toString(), inline: true },
+                        { name: 'Total Points', value: capitalTotalLoot.toString(), inline: true },
+                        { name: 'Participation', value: participationPercentage.toString() + '%', inline: false },
+                        { name: 'Raids Completed', value: raidsCompleted.toString(), inline: true },
+                        { name: 'Disctrict Destroyed', value: enemyDistrictsDestroyed.toString(), inline: true },
+                    )
+                    .setDescription(codeBlock(strData) + '\n' + bold(underscore('Stats :')));
+                    // .setFooter({ text: codeBlock(strData) });
 
                 // Regarder si c'est la première fois que le message est envoyé ou non
                 const embedExist = await Servers.count({
